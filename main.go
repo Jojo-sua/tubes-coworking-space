@@ -1,7 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 	"tubes_coworking/alpro"
 	"tubes_coworking/model"
 )
@@ -97,17 +100,29 @@ func tambahSpaceBaru() {
 	var wifiInput string
 	var wifiBool bool
 
+	reader := bufio.NewReader(os.Stdin)
+
 	fmt.Println("\n--- FORM TAMBAH DATA CO-WORKING SPACE ---")
+
 	fmt.Print("Nama Tempat         : ")
-	fmt.Scanln(&namaInput)
+	namaInput, _ = reader.ReadString('\n')
+	namaInput = strings.TrimSpace(namaInput)
+
 	fmt.Print("Lokasi/Kota         : ")
-	fmt.Scanln(&lokasiInput)
+	lokasiInput, _ = reader.ReadString('\n')
+	lokasiInput = strings.TrimSpace(lokasiInput)
+
 	fmt.Print("Harga Sewa (per jam): ")
 	fmt.Scanln(&hargaInput)
+
 	fmt.Print("Berikan Rating (1-5): ")
 	fmt.Scanln(&ratingInput)
+
 	fmt.Print("Apakah ada WiFi? (y/n): ")
 	fmt.Scanln(&wifiInput)
+
+	// Bersihkan sisa buffer setelah input angka terakhir
+	reader.ReadString('\n')
 
 	if wifiInput == "y" || wifiInput == "Y" {
 		wifiBool = true
@@ -153,12 +168,13 @@ func menuSorting() {
 	}
 }
 
-// PROSEDUR MODULAR: Sub-menu khusus menangani searching
 func menuSearching() {
 	if len(daftarSpace) == 0 {
 		fmt.Println("\n[Peringatan] Tidak ada data yang bisa dicari.")
 		return
 	}
+
+	reader := bufio.NewReader(os.Stdin)
 
 	var subPilihan int
 	fmt.Println("\n--- PILIHAN ALGORITMA PENCARIAN ---")
@@ -167,10 +183,13 @@ func menuSearching() {
 	fmt.Print("Pilih opsi (1-2): ")
 	fmt.Scanln(&subPilihan)
 
+	// Menyapu sisa instan Enter sebelum masuk ke membaca teks string
+	reader.ReadString('\n')
+
 	if subPilihan == 1 {
-		var lokasiCari string
 		fmt.Print("Masukkan nama lokasi/kota yang dicari: ")
-		fmt.Scanln(&lokasiCari)
+		lokasiCari, _ := reader.ReadString('\n')
+		lokasiCari = strings.TrimSpace(lokasiCari)
 
 		hasil := alpro.SequentialSearchLokasi(daftarSpace, lokasiCari)
 		if len(hasil) == 0 {
@@ -182,9 +201,9 @@ func menuSearching() {
 			}
 		}
 	} else if subPilihan == 2 {
-		var namaCari string
 		fmt.Print("Masukkan Nama Tempat secara tepat: ")
-		fmt.Scanln(&namaCari)
+		namaCari, _ := reader.ReadString('\n')
+		namaCari = strings.TrimSpace(namaCari)
 
 		idx := alpro.BinarySearchNama(daftarSpace, namaCari)
 		if idx == -1 {
@@ -223,17 +242,28 @@ func ubahSpace() {
 	var hargaInput, ratingInput float64
 	var wifiInput string
 
+	reader := bufio.NewReader(os.Stdin)
+
 	fmt.Printf("\nData Lama: %s (%s)\n", daftarSpace[indexDitemukan].Nama, daftarSpace[indexDitemukan].Lokasi)
+
 	fmt.Print("Masukkan Nama Baru         : ")
-	fmt.Scanln(&namaInput)
+	namaInput, _ = reader.ReadString('\n')
+	namaInput = strings.TrimSpace(namaInput)
+
 	fmt.Print("Masukkan Lokasi Baru       : ")
-	fmt.Scanln(&lokasiInput)
+	lokasiInput, _ = reader.ReadString('\n')
+	lokasiInput = strings.TrimSpace(lokasiInput)
+
 	fmt.Print("Masukkan Harga Sewa Baru   : ")
 	fmt.Scanln(&hargaInput)
+
 	fmt.Print("Masukkan Rating Baru (1-5) : ")
 	fmt.Scanln(&ratingInput)
+
 	fmt.Print("Apakah ada WiFi? (y/n)     : ")
 	fmt.Scanln(&wifiInput)
+
+	reader.ReadString('\n')
 
 	daftarSpace[indexDitemukan].Nama = namaInput
 	daftarSpace[indexDitemukan].Lokasi = lokasiInput
